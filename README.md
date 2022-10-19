@@ -29,10 +29,6 @@ Initially this generated was created by Carter Grimmeisen, but unfortunately onl
 
 To get a local copy up and running follow these simple steps.
 
-### Prerequisites
-
-This project utilizes yarn and if you plan on contributing, you should too.
-
 ### Installation
 
 0.  **Ensure your tsconfig.json enables the compiler's strict mode.**
@@ -71,7 +67,7 @@ This project utilizes yarn and if you plan on contributing, you should too.
     }
     ```
 
-3.  Run `npx prisma generate` or `yarn prisma generate` to generate your zod schemas
+3.  Run `npx prisma generate` or `pnpm dlx prisma generate` to generate your zod schemas
 4.  Import the generated schemas form your selected output location
 
 <!-- USAGE EXAMPLES -->
