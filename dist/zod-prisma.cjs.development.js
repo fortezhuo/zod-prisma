@@ -95,7 +95,7 @@ const getZodConstructor = (field, getRelatedModelName = name => name.toString())
         zodType = 'z.bigint()';
         break;
       case 'DateTime':
-        zodType = 'z.union([z.date(),z.string().regex(/d{4}-d{2}-d{2}/)])';
+        zodType = 'z.preprocess((a) => new Date(z.string().parse(a)), z.date())';
         break;
       case 'Float':
         zodType = 'z.number()';
@@ -151,15 +151,6 @@ const writeImportsForModel = (model, sourceFile, config, {
       moduleSpecifier: dotSlash(path__default["default"].relative(outputPath, path__default["default"].resolve(path__default["default"].dirname(schemaPath), config.imports)))
     });
   }
-  /*
-  if (config.useDecimalJs && model.fields.some((f) => f.type === 'Decimal')) {
-      importList.push({
-          kind: StructureKind.ImportDeclaration,
-          namedImports: ['Decimal'],
-          moduleSpecifier: 'decimal.js',
-      })
-  }
-  */
   const enumFields = model.fields.filter(f => f.kind === 'enum');
   const relationFields = model.fields.filter(f => f.kind === 'object');
   const relativePath = path__default["default"].relative(outputPath, clientPath);
@@ -177,7 +168,7 @@ const writeImportsForModel = (model, sourceFile, config, {
       importList.push({
         kind: tsMorph.StructureKind.ImportDeclaration,
         moduleSpecifier: './index',
-        namedImports: Array.from(new Set(filteredFields.flatMap(f => [`Complete${f.type}`, relatedModelName(f.type)])))
+        namedImports: Array.from(new Set(filteredFields.flatMap(f => [`_${relatedModelName(f.type)}`])))
       });
     }
   }
@@ -210,28 +201,18 @@ const generateRelatedSchemaForModel = (model, sourceFile, config, _prismaOptions
     relatedModelName
   } = useModelNames(config);
   const relationFields = model.fields.filter(f => f.kind === 'object');
-  sourceFile.addInterface({
-    name: `Complete${model.name}`,
-    isExported: true,
-    extends: [`z.infer<typeof ${modelName(model.name)}>`],
-    properties: relationFields.map(f => ({
-      hasQuestionToken: !f.isRequired,
-      name: f.name,
-      type: `Complete${f.type}${f.isList ? '[]' : ''}${!f.isRequired ? ' | null' : ''}`
-    }))
-  });
-  sourceFile.addStatements(writer => writeArray(writer, ['', '/**', ` * ${relatedModelName(model.name)} contains all relations on your model in addition to the scalars`, ' *', ' * NOTE: Lazy required in case of potential circular dependencies within schema', ' */']));
+  sourceFile.addStatements(writer => writeArray(writer, ['', '// NOTE: Lazy required in case of potential circular dependencies within schema', '']));
   sourceFile.addVariableStatement({
     declarationKind: tsMorph.VariableDeclarationKind.Const,
     isExported: true,
     declarations: [{
       name: relatedModelName(model.name),
-      type: `z.ZodSchema<Complete${model.name}>`,
+      type: "",
       initializer(writer) {
         writer.write(`z.lazy(() => ${modelName(model.name)}.extend(`).inlineBlock(() => {
           relationFields.forEach(field => {
             writeArray(writer, getJSDocs(field.documentation));
-            writer.write(`${field.name}: ${getZodConstructor(field, relatedModelName)}`).write(',').newLine();
+            writer.write(`${field.name}: _${getZodConstructor(field, relatedModelName)}`).write(',').newLine();
           });
         }).write('))');
       }

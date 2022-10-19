@@ -3,7 +3,10 @@
 	"version": "0.5.5",
 	"description": "A Prisma generator that creates Zod schemas for all of your models",
 	"license": "MIT",
-	"contributors":["Carter Grimmeisen","Forte Zhuo"],
+	"contributors": [
+		"Carter Grimmeisen",
+		"Forte Zhuo"
+	],
 	"homepage": "https://github.com/fortezhuo/zod-prisma#readme",
 	"repository": {
 		"type": "git",
@@ -52,13 +55,13 @@
 		"testEnvironment": "node"
 	},
 	"dependencies": {
-		"@prisma/generator-helper": "^4.2.1",
+		"@prisma/generator-helper": "^4.5.0",
 		"parenthesis": "^3.1.8",
 		"ts-morph": "^15.1.0"
 	},
 	"devDependencies": {
-		"@prisma/client": "^4.2.1",
-		"@prisma/internals": "^4.2.1",
+		"@prisma/client": "^4.5.0",
+		"@prisma/internals": "^4.5.0",
 		"@tsconfig/recommended": "^1.0.1",
 		"@types/fs-extra": "^9.0.13",
 		"dts-cli": "^1.5.2",
@@ -67,13 +70,13 @@
 		"fs-extra": "^10.1.0",
 		"husky": "^7.0.4",
 		"jest-mock-extended": "^2.0.7",
-		"prisma": "^4.4.0",
+		"prisma": "^4.5.0",
 		"tslib": "^2.4.0",
 		"typescript": "^4.5.5",
 		"zod": "^3.18.0"
 	},
 	"peerDependencies": {
-		"prisma": "^4.4.0",
+		"prisma": "^4.5.0",
 		"zod": "^3.18.0"
 	},
 	"engines": {

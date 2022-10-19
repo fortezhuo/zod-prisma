@@ -36,16 +36,6 @@ export const writeImportsForModel = (
 		})
 	}
 
-	/*
-	if (config.useDecimalJs && model.fields.some((f) => f.type === 'Decimal')) {
-		importList.push({
-			kind: StructureKind.ImportDeclaration,
-			namedImports: ['Decimal'],
-			moduleSpecifier: 'decimal.js',
-		})
-	}
-	*/
-
 	const enumFields = model.fields.filter((f) => f.kind === 'enum')
 	const relationFields = model.fields.filter((f) => f.kind === 'object')
 	const relativePath = path.relative(outputPath, clientPath)
@@ -69,8 +59,7 @@ export const writeImportsForModel = (
 				namedImports: Array.from(
 					new Set(
 						filteredFields.flatMap((f) => [
-							`Complete${f.type}`,
-							relatedModelName(f.type),
+							`_${relatedModelName(f.type)}`,
 						])
 					)
 				),
@@ -80,7 +69,6 @@ export const writeImportsForModel = (
 
 	sourceFile.addImportDeclarations(importList)
 }
-
 
 export const generateSchemaForModel = (
 	model: DMMF.Model,
@@ -128,27 +116,11 @@ export const generateRelatedSchemaForModel = (
 
 	const relationFields = model.fields.filter((f) => f.kind === 'object')
 
-	sourceFile.addInterface({
-		name: `Complete${model.name}`,
-		isExported: true,
-		extends: [`z.infer<typeof ${modelName(model.name)}>`],
-		properties: relationFields.map((f) => ({
-			hasQuestionToken: !f.isRequired,
-			name: f.name,
-			type: `Complete${f.type}${f.isList ? '[]' : ''}${!f.isRequired ? ' | null' : ''}`,
-		})),
-	})
-
 	sourceFile.addStatements((writer) =>
 		writeArray(writer, [
 			'',
-			'/**',
-			` * ${relatedModelName(
-				model.name
-			)} contains all relations on your model in addition to the scalars`,
-			' *',
-			' * NOTE: Lazy required in case of potential circular dependencies within schema',
-			' */',
+			'// NOTE: Lazy required in case of potential circular dependencies within schema',
+			'',
 		])
 	)
 
@@ -158,7 +130,7 @@ export const generateRelatedSchemaForModel = (
 		declarations: [
 			{
 				name: relatedModelName(model.name),
-				type: `z.ZodSchema<Complete${model.name}>`,
+				type:"",
 				initializer(writer) {
 					writer
 						.write(`z.lazy(() => ${modelName(model.name)}.extend(`)
@@ -168,7 +140,7 @@ export const generateRelatedSchemaForModel = (
 
 								writer
 									.write(
-										`${field.name}: ${getZodConstructor(
+										`${field.name}: _${getZodConstructor(
 											field,
 											relatedModelName
 										)}`
