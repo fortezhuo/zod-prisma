@@ -4,7 +4,7 @@ const configBoolean = z.enum(['true', 'false']).transform((arg) => JSON.parse(ar
 
 export const configSchema = z.object({
 	relationModel: configBoolean.default('true').or(z.literal('default')),
-	modelSuffix: z.string().default('Model'),
+	modelSuffix: z.string().default('_model'),
 	modelCase: z.enum(['PascalCase', 'camelCase']).default('PascalCase'),
 	useDecimalJs: configBoolean.default('false'),
 	imports: z.string().optional(),

@@ -16,7 +16,7 @@ var version = "0.5.5";
 const configBoolean = /*#__PURE__*/zod.z.enum(['true', 'false']).transform(arg => JSON.parse(arg));
 const configSchema = /*#__PURE__*/zod.z.object({
   relationModel: /*#__PURE__*/configBoolean.default('true').or( /*#__PURE__*/zod.z.literal('default')),
-  modelSuffix: /*#__PURE__*/zod.z.string().default('Model'),
+  modelSuffix: /*#__PURE__*/zod.z.string().default('_model'),
   modelCase: /*#__PURE__*/zod.z.enum(['PascalCase', 'camelCase']).default('PascalCase'),
   useDecimalJs: /*#__PURE__*/configBoolean.default('false'),
   imports: /*#__PURE__*/zod.z.string().optional(),
@@ -37,7 +37,7 @@ const useModelNames = ({
   };
   return {
     modelName: name => formatModelName(name, relationModel === 'default' ? '_' : ''),
-    relatedModelName: name => formatModelName(relationModel === 'default' ? name.toString() : `Related${name.toString()}`)
+    relatedModelName: name => formatModelName(relationModel === 'default' ? name.toString() : `related_${name.toString()}`)
   };
 };
 const needsRelatedModel = (model, config) => model.fields.some(field => field.kind === 'object') && config.relationModel !== false;
@@ -137,7 +137,7 @@ const writeImportsForModel = (model, sourceFile, config, {
   clientPath
 }) => {
   const {
-    relatedModelName
+    modelName
   } = useModelNames(config);
   const importList = [{
     kind: tsMorph.StructureKind.ImportDeclaration,
@@ -168,7 +168,7 @@ const writeImportsForModel = (model, sourceFile, config, {
       importList.push({
         kind: tsMorph.StructureKind.ImportDeclaration,
         moduleSpecifier: './index',
-        namedImports: Array.from(new Set(filteredFields.flatMap(f => [`_${relatedModelName(f.type)}`])))
+        namedImports: Array.from(new Set(filteredFields.flatMap(f => [`${modelName(f.type)}`])))
       });
     }
   }
@@ -212,7 +212,7 @@ const generateRelatedSchemaForModel = (model, sourceFile, config, _prismaOptions
         writer.write(`z.lazy(() => ${modelName(model.name)}.extend(`).inlineBlock(() => {
           relationFields.forEach(field => {
             writeArray(writer, getJSDocs(field.documentation));
-            writer.write(`${field.name}: _${getZodConstructor(field, relatedModelName)}`).write(',').newLine();
+            writer.write(`${field.name}: ${getZodConstructor(field, modelName)}`).write(',').newLine();
           });
         }).write('))');
       }

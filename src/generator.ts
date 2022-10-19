@@ -17,7 +17,7 @@ export const writeImportsForModel = (
 	config: Config,
 	{ schemaPath, outputPath, clientPath }: PrismaOptions
 ) => {
-	const { relatedModelName } = useModelNames(config)
+	const { modelName } = useModelNames(config)
 	const importList: ImportDeclarationStructure[] = [
 		{
 			kind: StructureKind.ImportDeclaration,
@@ -59,7 +59,7 @@ export const writeImportsForModel = (
 				namedImports: Array.from(
 					new Set(
 						filteredFields.flatMap((f) => [
-							`_${relatedModelName(f.type)}`,
+							`${modelName(f.type)}`,
 						])
 					)
 				),
@@ -140,9 +140,9 @@ export const generateRelatedSchemaForModel = (
 
 								writer
 									.write(
-										`${field.name}: _${getZodConstructor(
+										`${field.name}: ${getZodConstructor(
 											field,
-											relatedModelName
+											modelName
 										)}`
 									)
 									.write(',')
