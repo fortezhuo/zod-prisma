@@ -54,7 +54,7 @@ To get a local copy up and running follow these simple steps.
       modelCase                = "PascalCase" // (default) Output models using pascal case (ex. UserModel, PostModel)
       // modelCase             = "camelCase" // Output models using camel case (ex. userModel, postModel)
 
-      modelSuffix              = "_model_" // (default) Suffix to apply to your prisma models when naming Zod schemas
+      modelSuffix              = "_model" // (default) Suffix to apply to your prisma models when naming Zod schemas
 
       imports                  = null // (default) will import the referenced file in generated schemas to be used via imports.someExportedVariable
 
