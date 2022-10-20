@@ -3,8 +3,7 @@ import { computeCustomSchema, computeModifiers } from './docs'
 
 export const getZodConstructor = (
 	field: DMMF.Field,
-	getRelatedModelName = (name: string) =>
-		name.toString()
+	getRelatedModelName = (name: string) => name.toString()
 ) => {
 	let zodType = 'z.unknown()'
 	let extraModifiers: string[] = ['']
@@ -24,7 +23,8 @@ export const getZodConstructor = (
 				zodType = 'z.bigint()'
 				break
 			case 'DateTime':
-				zodType = 'z.preprocess((a) => new Date(z.string().parse(a)), z.date())'
+				zodType =
+					'z.preprocess((arg) => typeof arg == "string" || arg instanceof Date ? new Date(arg) : arg, z.date())'
 				break
 			case 'Float':
 				zodType = 'z.number()'
@@ -56,8 +56,10 @@ export const getZodConstructor = (
 		zodType = computeCustomSchema(field.documentation) ?? zodType
 		extraModifiers.push(...computeModifiers(field.documentation))
 	}
-	if (!field.isRequired || field.isList || field.isUpdatedAt ||field.hasDefaultValue)
+	if (!field.isRequired || field.isList || field.isUpdatedAt || field.hasDefaultValue) {
 		extraModifiers.push('optional()')
+		if (!field.isId) extraModifiers.push('nullable()')
+	}
 
 	return `${zodType}${extraModifiers.join('.')}`
 }

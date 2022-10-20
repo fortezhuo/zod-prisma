@@ -95,7 +95,7 @@ const getZodConstructor = (field, getRelatedModelName = name => name.toString())
         zodType = 'z.bigint()';
         break;
       case 'DateTime':
-        zodType = 'z.preprocess((a) => new Date(z.string().parse(a)), z.date())';
+        zodType = 'z.preprocess((arg) => typeof arg == "string" || arg instanceof Date ? new Date(arg) : arg, z.date())';
         break;
       case 'Float':
         zodType = 'z.number()';
@@ -127,7 +127,10 @@ const getZodConstructor = (field, getRelatedModelName = name => name.toString())
     zodType = (_computeCustomSchema = computeCustomSchema(field.documentation)) != null ? _computeCustomSchema : zodType;
     extraModifiers.push(...computeModifiers(field.documentation));
   }
-  if (!field.isRequired || field.isList || field.isUpdatedAt || field.hasDefaultValue) extraModifiers.push('optional()');
+  if (!field.isRequired || field.isList || field.isUpdatedAt || field.hasDefaultValue) {
+    extraModifiers.push('optional()');
+    if (!field.isId) extraModifiers.push('nullable()');
+  }
   return `${zodType}${extraModifiers.join('.')}`;
 };
 
