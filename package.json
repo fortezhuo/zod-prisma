@@ -1,7 +1,7 @@
 {
-	"name": "zod-prisma",
+	"name": "@fortezhuo/zod-prisma",
 	"version": "0.5.5",
-	"description": "A Prisma generator that creates Zod schemas for all of your models",
+	"description": "Forked Version Prisma generator that creates Zod schemas for all of your models",
 	"license": "MIT",
 	"contributors": [
 		"Carter Grimmeisen",
@@ -33,7 +33,6 @@
 	"scripts": {
 		"build": "dts build --target node --format cjs --rollupTypes",
 		"lint": "tsc --noEmit && dts lint src --ignore-pattern src/test/functional",
-		"prepare": "husky install",
 		"prepublish": "dts build --target node --format cjs --rollupTypes",
 		"start": "dts watch",
 		"test": "dts test --maxWorkers=4 --verbose"

@@ -21,7 +21,7 @@ Initially this generated was created by Carter Grimmeisen, but unfortunately onl
 
 -   [dts-cli](https://github.com/weiran-zsd/dts-cli)
 -   [Zod](https://github.com/colinhacks/zod)
--   [Forked from](https://github.com/CarterGrimmeisen/zod-prisma)
+-   [Forked Version](https://github.com/CarterGrimmeisen/zod-prisma)
 
 <!-- GETTING STARTED -->
 
@@ -54,10 +54,7 @@ To get a local copy up and running follow these simple steps.
       modelCase                = "PascalCase" // (default) Output models using pascal case (ex. UserModel, PostModel)
       // modelCase             = "camelCase" // Output models using camel case (ex. userModel, postModel)
 
-      modelSuffix              = "Model" // (default) Suffix to apply to your prisma models when naming Zod schemas
-
-      // useDecimalJs          = false // (default) represent the prisma Decimal type using as a JS number
-      useDecimalJs             = true // represent the prisma Decimal type using Decimal.js (as Prisma does)
+      modelSuffix              = "_model_" // (default) Suffix to apply to your prisma models when naming Zod schemas
 
       imports                  = null // (default) will import the referenced file in generated schemas to be used via imports.someExportedVariable
 
