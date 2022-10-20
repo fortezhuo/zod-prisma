@@ -37,7 +37,7 @@ To get a local copy up and running follow these simple steps.
 1.  Add zod-prisma as a dev dependency
 
     ```sh
-    pnpm add -D zod-prisma
+    pnpm add -D @fortezhuo/zod-prisma
     ```
 
 2.  Add the zod-prisma generator to your schema.prisma
