@@ -1,6 +1,6 @@
 {
 	"name": "@fortezhuo/zod-prisma",
-	"version": "0.5.6",
+	"version": "0.5.7",
 	"description": "Forked Version Prisma generator that creates Zod schemas for all of your models",
 	"license": "MIT",
 	"contributors": [

@@ -11,7 +11,7 @@ function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'defau
 
 var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
 
-var version = "0.5.5";
+var version = "0.5.6";
 
 const configBoolean = /*#__PURE__*/zod.z.enum(['true', 'false']).transform(arg => JSON.parse(arg));
 const configSchema = /*#__PURE__*/zod.z.object({
@@ -127,9 +127,11 @@ const getZodConstructor = (field, getRelatedModelName = name => name.toString())
     zodType = (_computeCustomSchema = computeCustomSchema(field.documentation)) != null ? _computeCustomSchema : zodType;
     extraModifiers.push(...computeModifiers(field.documentation));
   }
-  if (!field.isRequired || field.isList || field.isUpdatedAt || field.hasDefaultValue) {
+  if (!field.isRequired || field.isUpdatedAt || field.hasDefaultValue) {
     extraModifiers.push('optional()');
-    if (!field.isId || !field.hasDefaultValue) extraModifiers.push('nullable()');
+    if (!field.isId && !field.hasDefaultValue && !field.isList && !field.isUpdatedAt) {
+      extraModifiers.push('nullable()');
+    }
   }
   return `${zodType}${extraModifiers.join('.')}`;
 };
